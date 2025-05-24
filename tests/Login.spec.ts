@@ -6,6 +6,9 @@ dotenv.config({ path: './config/.env' });
 
 
 test.describe('test group Login',()=>{
+  test.beforeAll(async({})=>{
+    console.log('beforeAll login')
+  })
   test('test check sauce Demo page',async({page})=>{
     await page.goto(process.env.BASEURL!)
     const LoginPage = new LoginPageClass(page);
@@ -51,5 +54,9 @@ test.describe('test group Login',()=>{
     await page.waitForTimeout(2000)
     await expect(page.locator('[data-test="error"]')).toBeVisible()
     await expect(page.locator('[data-test="error"]')).toContainText('Epic sadface: Password is required')
+  })
+
+  test.afterAll(async({})=>{
+    console.log('afterAll login')
   })
 })

@@ -5,9 +5,23 @@ import * as dotenv from 'dotenv'
 dotenv.config({ path: './config/.env' });
 
 test.describe('test group Checkout',()=>{
+
+    test.beforeAll(async ({ browser }) => {
+    const page = await browser.newPage()
+    await page.goto(process.env.BASEURL!)
+    const LoginPage = new LoginPageClass(page)
+    await LoginPage.Login(process.env.USER_NAME!, process.env.PASSWORD!)
+    await page.context().storageState({ path: 'storage/state.json' })
+    console.log('beforeAll Checkout')
+    })
+
+    test.beforeEach(async ({ page }) => {
+        await page.goto('/inventory.html')
+        console.log('beforeEach Checkout')
+    })
+
     test('Test check to checkout', async({page})=>{
-        const LoginPage = new LoginPageClass(page);
-        LoginPage.Login('standard_user','secret_sauce')
+        
         await page.locator('[data-test="add-to-cart-sauce-labs-bike-light"]').click()
         await page.waitForTimeout(3000)
         await page.locator('[data-test="add-to-cart-sauce-labs-bolt-t-shirt"]').click()
@@ -23,8 +37,6 @@ test.describe('test group Checkout',()=>{
     })
 
     test.fail('Test check to first name ,last name and postal code is empty', async({page})=>{
-        const LoginPage = new LoginPageClass(page);
-        LoginPage.Login('standard_user','secret_sauce')
         await page.locator('[data-test="add-to-cart-sauce-labs-bike-light"]').click()
         await page.waitForTimeout(3000)
         await page.locator('[data-test="add-to-cart-sauce-labs-bolt-t-shirt"]').click()
@@ -38,8 +50,6 @@ test.describe('test group Checkout',()=>{
     })
 
     test.fixme('Test check to first name is empty', async({page})=>{
-        const LoginPage = new LoginPageClass(page);
-        LoginPage.Login('standard_user','secret_sauce')
         await page.locator('[data-test="add-to-cart-sauce-labs-bike-light"]').click()
         await page.waitForTimeout(3000)
         await page.locator('[data-test="add-to-cart-sauce-labs-bolt-t-shirt"]').click()
@@ -55,8 +65,6 @@ test.describe('test group Checkout',()=>{
     })
 
     test('Test check to last name is empty', async({page})=>{
-        const LoginPage = new LoginPageClass(page);
-        LoginPage.Login('standard_user','secret_sauce')
         await page.locator('[data-test="add-to-cart-sauce-labs-bike-light"]').click()
         await page.waitForTimeout(3000)
         await page.locator('[data-test="add-to-cart-sauce-labs-bolt-t-shirt"]').click()
@@ -72,8 +80,6 @@ test.describe('test group Checkout',()=>{
     })
 
     test('Test check to postal code name is empty', async({page})=>{
-        const LoginPage = new LoginPageClass(page);
-        LoginPage.Login('standard_user','secret_sauce')
         await page.locator('[data-test="add-to-cart-sauce-labs-bike-light"]').click()
         await page.waitForTimeout(3000)
         await page.locator('[data-test="add-to-cart-sauce-labs-bolt-t-shirt"]').click()
@@ -89,8 +95,6 @@ test.describe('test group Checkout',()=>{
     })
 
     test('test cancel to checkout',async ({page})=>{
-        const LoginPage = new LoginPageClass(page);
-        LoginPage.Login('standard_user','secret_sauce')
         await page.locator('[data-test="add-to-cart-sauce-labs-bike-light"]').click()
         await page.waitForTimeout(3000)
         await page.locator('[data-test="add-to-cart-sauce-labs-bolt-t-shirt"]').click()
@@ -102,8 +106,6 @@ test.describe('test group Checkout',()=>{
     })
 
     test('Test check to cancel back step to finish', async({page})=>{
-        const LoginPage = new LoginPageClass(page);
-        LoginPage.Login('standard_user','secret_sauce')
         await page.locator('[data-test="add-to-cart-sauce-labs-bike-light"]').click()
         await page.waitForTimeout(3000)
         await page.locator('[data-test="add-to-cart-sauce-labs-bolt-t-shirt"]').click()
@@ -120,5 +122,10 @@ test.describe('test group Checkout',()=>{
         await page.locator('[data-test="continue"]').click()
         await page.waitForTimeout(1000)
         await page.locator('[data-test="cancel"]').click()
+    })
+
+    test.afterAll(async({page})=>{
+        await page.close()
+        console.log('afterAll checkout')
     })
 })
